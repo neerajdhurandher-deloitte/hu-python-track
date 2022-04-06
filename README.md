@@ -22,4 +22,8 @@
     <a href = "https://github.com/neerajdhurandher-deloitte/hu-python-track/tree/mini-assignment-5" >mini-assignment-5</a>
     <p>This assignment includes filter & reduce function concepts in python</p>
   </li>
+     <li> 
+    <a href = "https://github.com/neerajdhurandher-deloitte/hu-python-track/tree/mini-assignment-6" >mini-assignment-6</a>
+    <p>This assignment includes Decorators & Generators concepts in python</p>
+  </li>
 </ul>
