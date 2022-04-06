@@ -26,4 +26,8 @@
     <a href = "https://github.com/neerajdhurandher-deloitte/hu-python-track/tree/mini-assignment-6" >mini-assignment-6</a>
     <p>This assignment includes Decorators & Generators concepts in python</p>
   </li>
+       <li> 
+    <a href = "https://github.com/neerajdhurandher-deloitte/hu-python-track/tree/mini-assignment-7" >mini-assignment-7</a>
+    <p>This assignment includes error handling & file handling concepts in python</p>
+  </li>
 </ul>
