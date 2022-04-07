@@ -1,4 +1,4 @@
-class movie():
+class Movie:
     def __init__(self, title, genre, length, cast, director, admin_rating, language, timings, numShows, first_show,
                  interval_timing, gap_bt_show, seat_capacity):
         self.title = title
