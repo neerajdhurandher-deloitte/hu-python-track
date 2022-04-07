@@ -70,6 +70,21 @@ def show_count_validation(total_length, numShows, first_show):
         return False
 
 
+def show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show):
+    total_length = length + interval_timing + gap_bt_show
+
+    valid_show_setup = show_count_validation(total_length, numShows, first_show)
+
+    while not valid_show_setup:
+        print("Invalid shows setting !!")
+        numShows = int(input("Enter movie's number of shows in a day :- "))
+        valid_show_setup = show_count_validation(total_length, numShows, first_show)
+
+    timings = cal_movie_show_timing(total_length, gap_bt_show, numShows, first_show * 60)
+
+    return timings
+
+
 def add_new_movie():
     print("****** Add new movie info ******")
     title = input("Enter movie's title :- ")
@@ -87,16 +102,8 @@ def add_new_movie():
     gap_bt_show = int(input("Enter the of gap timing between shows  (int minutes) :- "))
     seat_capacity = int(input("Enter seat capacity in theater :- "))
 
-    total_length = length + interval_timing + gap_bt_show
+    timings = show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show)
 
-    valid_show_setup = show_count_validation(total_length, numShows, first_show)
-
-    while not valid_show_setup:
-        print("Invalid shows setting !!")
-        numShows = int(input("Enter movie's number of shows in a day :- "))
-        valid_show_setup = show_count_validation(total_length, numShows, first_show)
-
-    timings = cal_movie_show_timing(total_length, gap_bt_show, numShows, first_show * 60)
 
     new_movie_obj = movie.Movie(title, genre, length, cast, director, admin_rating, language, timings, numShows,
                                 first_show, interval_timing, gap_bt_show, seat_capacity)
@@ -106,8 +113,107 @@ def add_new_movie():
     print("Available timings are ", timings)
 
 
+def options_on_invalid_choice():
+        print("1. Try again")
+        print("2. Exit")
+        op = int(input("choice :- "))
+        return  op
+
+
+def edit_movie_info(editing_movie, param):
+    new_input = input("Enter new " + param + " :- ")
+
+    try:
+        editing_movie.param = new_input
+    except TypeError as e:
+        editing_movie.param = int(new_input)
+    finally:
+        print("movie " + param + " info edit successfully")
+        print("movie's edited info ", editing_movie)
+
 def edit_movie():
     print("Edit movie's info")
+
+    movie_name = input("Find movie for edit :- ")
+
+    if movie_dict.get(movie_name) is None:
+        print("movie name doesn't exit")
+        op = 0
+        while op != 2:
+            op = options_on_invalid_choice()
+            if op == 1:
+                edit_movie()
+            elif op == 2:
+                return
+            else:
+                print("Invalid input")
+
+    else:
+        editing_movie = movie_dict.get(movie_name)
+
+        edit_choice = -1
+
+        while edit_choice != 0:
+
+            print("Which filed you want to edit")
+            print("1. Title")
+            print("2. genre")
+            print("3. length")
+            print("4. cast")
+            print("5. director")
+            print("6. admin rating")
+            print("7. language")
+            print("8. number of Shows")
+            print("9. first_show")
+            print("10. interval timing")
+            print("11. gap between shows")
+            print("12. seat capacity")
+            print("0. Exit")
+
+            edit_choice = int(input("Enter choice :- "))
+
+            if edit_choice == 0:
+                go_to_admin_options()
+
+            if edit_choice == 1:
+                op = 0
+                while op != 2:
+                    new_tile = input("new title for movie:- ")
+
+                    if movie_dict[new_tile] is None:
+                        editing_movie.title = new_tile
+                        movie_dict[new_tile] = movie_dict[movie_name]
+                        del movie_dict[movie_name]
+
+                    else:
+                        print("Entered movie name already exits ")
+                        op = options_on_invalid_choice()
+
+            elif edit_choice == 2:
+                edit_movie_info(editing_movie, "genre")
+            elif edit_choice == 3:
+                edit_movie_info(editing_movie, "length")
+            elif edit_choice == 4:
+                edit_movie_info(editing_movie, "cast")
+            elif edit_choice == 5:
+                edit_movie_info(editing_movie, "director")
+            elif edit_choice == 6:
+                edit_movie_info(editing_movie, "admin_rating")
+            elif edit_choice == 7:
+                edit_movie_info(editing_movie, "language")
+            elif edit_choice == 8:
+                edit_movie_info(editing_movie, "numShow")
+            elif edit_choice == 9:
+                edit_movie_info(editing_movie, "first_show")
+            elif edit_choice == 10:
+                edit_movie_info(editing_movie, "interval_timing")
+            elif edit_choice == 11:
+                edit_movie_info(editing_movie, "gap_bt_show")
+            elif edit_choice == 12:
+                edit_movie_info(editing_movie, "seat_capacity")
+
+
+
 
 
 def delete_movie():
@@ -166,3 +272,4 @@ class Admin(InvalidCredential):
 # ob = Admin()
 # ob.log_in_credential()
 add_new_movie()
+edit_movie()
