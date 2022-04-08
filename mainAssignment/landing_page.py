@@ -4,16 +4,33 @@ from mainAssignment.pages.userPage import UserPage
 
 class landingPage():
     def start(self):
-        # admin_ob.log_in_credential()
-        admin_ob = Admin()
-        # admin_ob.print_movie_list()
-        admin_ob.add_new_movie()
-        admin_ob.print_movie_list()
-        # admin_ob.edit_movie()
 
-        user_db = UserPage()
-        print("User login")
-        user_db.print_movie_list()
+        op = 0
+        while op != 3:
+            print("******Welcome to BookMyShow******* ")
+            print("1. Admin")
+            print("2. User")
+            print("3. Exit")
+
+            op = int(input("Enter your choice :- "))
+            if op == 1:
+                admin_ob = Admin()
+                # admin_ob.log_in_credential()
+                # admin_ob.print_movie_list()
+                admin_ob.add_new_movie()
+                admin_ob.print_movie_list()
+                # admin_ob.edit_movie()
+
+            elif op == 2:
+                user_db = UserPage()
+                print("User login")
+                user_db.user_page()
+                user_db.print_movie_list()
+            elif op == 3:
+                exit()
+            else:
+                print("Invalid input !!  try again")
+
 
 ob = landingPage()
 ob.start()

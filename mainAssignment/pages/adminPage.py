@@ -207,7 +207,7 @@ class Admin(InvalidCredential, DB):
         length += int(input("Enter movie's length (minutes):- "))
         cast = input("Enter movie's cast :- ")
         director = input("Enter movie's director :- ")
-        admin_rating = int(input("Enter movie's admin rating :- "))
+        admin_rating = float(input("Enter movie's admin rating (out of 10 ):- "))
         language = input("Enter movie's language :- ")
 
         numShows = int(input("Enter movie's number of shows in a day :- "))
@@ -218,12 +218,19 @@ class Admin(InvalidCredential, DB):
 
         timings = show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show)
 
-        new_movie_obj = movie.Movie(title, genre, length, cast, director, admin_rating, language, timings, numShows,
+        new_movie_obj = movie.Movie(self, title, genre, length, cast, director, admin_rating, 0.0, language, timings, numShows,
                                     first_show, interval_timing, gap_bt_show, seat_capacity)
+
         DB.movie_dict[title] = new_movie_obj
+
+        DB.movie_list = new_movie_obj
+
+        DB.show_movie_details(self, new_movie_obj)
 
         print(title, " Movie add successfully ")
         print("Available timings are ", timings)
+
+        DB.show_movies_name(self)
 
     def go_to_admin_options(self):
         print("****** Welcome Admin *******")
