@@ -1,8 +1,9 @@
 from mainAssignment.pages.adminPage import Admin
 from mainAssignment.pages.userPage import UserPage
+from mainAssignment.customeExceptions.invalidInput import InputCheck
 
 
-class landingPage():
+class landingPage(InputCheck):
     def start(self):
 
         op = 0
@@ -12,14 +13,10 @@ class landingPage():
             print("2. User")
             print("3. Exit")
 
-            op = int(input("Enter your choice :- "))
+            op = InputCheck.int_input_check("Enter your choice :- ")
             if op == 1:
                 admin_ob = Admin()
-                # admin_ob.log_in_credential()
-                # admin_ob.print_movie_list()
-                admin_ob.add_new_movie()
-                admin_ob.print_movie_list()
-                # admin_ob.edit_movie()
+                admin_ob.log_in_credential()
 
             elif op == 2:
                 user_db = UserPage()

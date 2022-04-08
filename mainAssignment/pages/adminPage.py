@@ -1,16 +1,16 @@
-# from mainAssignment.customeExceptions import InvalidCredential
-
+from mainAssignment.customeExceptions.invalidCredential import InvalidCredential
+from mainAssignment.customeExceptions.invalidInput import InputCheck
 from mainAssignment.utils import movie
 
 from mainAssignment.utils.db import DB
 
 
-class InvalidCredential(Exception):
-    def __init__(self):
-        super()
-
-    def print_msg(self, message):
-        print("Error ", message)
+# class InvalidCredential(Exception):
+#     def __init__(self):
+#         super()
+#
+#     def print_msg(self, message):
+#         print("Error ", message)
 
 
 # movie_dict = {}
@@ -79,7 +79,7 @@ def show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show
 
     while not valid_show_setup:
         print("Invalid shows setting !!")
-        numShows = int(input("Enter movie's number of shows in a day :- "))
+        numShows = InputCheck.int_input_check("Enter movie's number of shows in a day :- ")
         valid_show_setup = show_count_validation(total_length, numShows, first_show)
 
     timings = cal_movie_show_timing(total_length, gap_bt_show, numShows, first_show * 60)
@@ -90,7 +90,7 @@ def show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show
 def options_on_invalid_choice():
     print("1. Try again")
     print("2. Exit")
-    op = int(input("choice :- "))
+    op = InputCheck.int_input_check("choice :- ")
     return op
 
 
@@ -101,14 +101,16 @@ def edit_movie_info(editing_movie, param):
         editing_movie.param = new_input
     except TypeError as e:
         editing_movie.param = int(new_input)
+    except TypeError as e:
+        editing_movie.param = float(new_input)
     finally:
         print("movie " + param + " info edit successfully")
         print("movie's edited info ", editing_movie)
 
 
-class Admin(InvalidCredential, DB):
+class Admin(InvalidCredential, DB, InputCheck):
     # TODO create valid admin credential
-    admin_dict = {"username": "a", "password": "1"}
+    admin_dict = {"username": "a", "password": "a"}
 
     print("****** Welcome to Admin Login Page *******")
 
@@ -117,6 +119,7 @@ class Admin(InvalidCredential, DB):
 
     def logout(self):
         print("Logout")
+        return
 
     def edit_movie(self):
         print("Edit movie's info")
@@ -157,7 +160,7 @@ class Admin(InvalidCredential, DB):
                 print("12. seat capacity")
                 print("0. Exit")
 
-                edit_choice = int(input("Enter choice :- "))
+                edit_choice = InputCheck.int_input_check("Enter choice :- ")
 
                 if edit_choice == 0:
                     self.go_to_admin_options()
@@ -203,34 +206,50 @@ class Admin(InvalidCredential, DB):
         print("****** Add new movie info ******")
         title = input("Enter movie's title :- ")
         genre = input("Enter movie's Genre :- ")
-        length = 60 * int(input("Enter movie's length (hours):- "))
-        length += int(input("Enter movie's length (minutes):- "))
+        length = InputCheck.int_input_check("Enter movie's length (hours):- ")
+        try :
+            length *= 60
+        except Exception as e:
+            print(e)
+            length = InputCheck.int_input_check("Enter movie's length (hours):- ")
+
+        length += InputCheck.int_input_check("Enter movie's length (minutes):- ")
         cast = input("Enter movie's cast :- ")
         director = input("Enter movie's director :- ")
-        admin_rating = float(input("Enter movie's admin rating (out of 10 ):- "))
+        admin_rating = InputCheck.float_input_check("Enter movie's admin rating (out of 10 ):- ")
         language = input("Enter movie's language :- ")
 
-        numShows = int(input("Enter movie's number of shows in a day :- "))
-        first_show = int(input("Enter timing of first shows of the day ( 24 hours formate ) :- "))
-        interval_timing = int(input("Enter movie's interval timing  (int minutes) :- "))
-        gap_bt_show = int(input("Enter the of gap timing between shows  (int minutes) :- "))
-        seat_capacity = int(input("Enter seat capacity in theater :- "))
+        numShows = InputCheck.int_input_check("Enter movie's number of shows in a day :- ")
+        first_show = InputCheck.int_input_check("Enter timing of first shows of the day ( 24 hours formate ) :- ")
+        interval_timing = InputCheck.int_input_check("Enter movie's interval timing  (int minutes) :- ")
+        gap_bt_show = InputCheck.int_input_check("Enter the of gap timing between shows  (int minutes) :- ")
+        seat_capacity = InputCheck.int_input_check("Enter seat capacity in theater :- ")
 
         timings = show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show)
 
-        new_movie_obj = movie.Movie(self, title, genre, length, cast, director, admin_rating, 0.0, language, timings, numShows,
-                                    first_show, interval_timing, gap_bt_show, seat_capacity)
+        user_rating = 0.0
+        available_seat = seat_capacity
+
+        new_movie_obj = movie.Movie(title, genre, length, cast, director, admin_rating, user_rating, language, timings,
+                                    numShows,
+                                    first_show, interval_timing, gap_bt_show, seat_capacity, available_seat)
 
         DB.movie_dict[title] = new_movie_obj
 
         DB.movie_list = new_movie_obj
 
-        DB.show_movie_details(self, new_movie_obj)
+        # print("title", new_movie_obj.title)
+        # print("gerne", new_movie_obj.genre)
+        # print("len", new_movie_obj.length)
+        # print("time ", new_movie_obj.timings)
+
+        # DB.show_movie_details(self, new_movie_obj)
 
         print(title, " Movie add successfully ")
-        print("Available timings are ", timings)
 
-        DB.show_movies_name(self)
+        # print("Available timings are ", timings)
+
+        self.go_to_admin_options()
 
     def go_to_admin_options(self):
         print("****** Welcome Admin *******")
@@ -242,7 +261,7 @@ class Admin(InvalidCredential, DB):
         sel_option = 0
 
         while sel_option != 4:
-            sel_option = int(input("Enter your choice :- "))
+            sel_option = InputCheck.int_input_check("Enter your choice :- ")
 
             if sel_option == 1:
                 self.add_new_movie()
@@ -254,6 +273,9 @@ class Admin(InvalidCredential, DB):
                 self.logout()
 
     def log_in_credential(self):
+
+        print("****** Welcome Admin *******")
+
         username = input("Enter admin username :- ")
         password = input("Enter password :- ")
 
@@ -261,15 +283,11 @@ class Admin(InvalidCredential, DB):
             get_username = self.admin_dict.get('username')
             get_password = self.admin_dict.get('password')
 
-            if get_username != username:
+            # on successfully login
+            if get_username.__eq__(username) and get_password.__eq__(password):
+                self.go_to_admin_options()
+            else:
                 raise InvalidCredential
-            while get_password != password:
-                print("Incorrect password")
-                password = input("Enter password :- ")
-            self.go_to_admin_options()
+
         except InvalidCredential as e:
-            e.print_msg("Invalid admin credentials")
-
-
-
-
+            e.print_msg("Invalid admin credentials !!")

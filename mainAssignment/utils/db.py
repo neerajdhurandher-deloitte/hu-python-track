@@ -1,4 +1,4 @@
-import time_formate
+from mainAssignment.utils import time_formate
 class DB:
     user_list = []
     user_dic = {}
@@ -21,9 +21,11 @@ class DB:
                 print(e)
 
     def show_movie_details(self, get_movie):
+        length = get_movie.length
+
         print("Title : ", get_movie.title)
         print("Genre : ", get_movie.genre)
-        print("Length : ", time_formate.min_to_hour_min(get_movie.length))
+        print("Length : ", time_formate.min_to_hour_min(length))
         print("Cast : ", get_movie.cast)
         print("Director : ", get_movie.director)
         print("Admin rating : ", get_movie.admin_rating)
