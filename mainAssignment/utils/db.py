@@ -4,8 +4,10 @@ from mainAssignment.utils import movie
 
 class DB:
     user_list = []
+    # username is key of dict
     user_dic = {}
     movie_list = []
+    # title is key of dict
     movie_dict = {}
 
     def print_movie_list(self):
@@ -16,12 +18,7 @@ class DB:
 
     def show_movies_name(self):
         index = 1
-        # for movie_key, movie_value in self.movie_dict.items():
-        #     try:
-        #         print(str(index), " ", movie_key)
-        #         index += 1
-        #     except Exception as e:
-        #         print(e)
+
         for item in self.movie_list:
             try:
                 print(str(index), " ", item.title)

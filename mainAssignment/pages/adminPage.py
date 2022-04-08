@@ -1,3 +1,5 @@
+import random
+
 from mainAssignment.customeExceptions.invalidCredential import InvalidCredential
 from mainAssignment.customeExceptions.invalidInput import InputCheck
 from mainAssignment.utils import movie
@@ -94,18 +96,29 @@ def options_on_invalid_choice():
     return op
 
 
-def edit_movie_info(editing_movie, param):
+def edit_movie_info(selected_movie_index, param):
     new_input = input("Enter new " + param + " :- ")
+    editing_movie = DB.movie_list[selected_movie_index]
 
     try:
         editing_movie.param = new_input
     except TypeError as e:
         editing_movie.param = int(new_input)
-    except TypeError as e:
         editing_movie.param = float(new_input)
     finally:
         print("movie " + param + " info edit successfully")
-        print("movie's edited info ", editing_movie)
+
+
+def get_id():
+    valid = False
+    generated_id = str(random.randint(1, 100000))
+
+    while not valid:
+        if generated_id in DB.movie_dict.keys():
+            generated_id = random.randint(1, 100000)
+
+        else:
+            return generated_id
 
 
 class Admin(InvalidCredential, DB, InputCheck):
@@ -116,6 +129,30 @@ class Admin(InvalidCredential, DB, InputCheck):
 
     def delete_movie(self):
         print("Delete a movie")
+        DB.show_movies_name(self)
+
+        logoutcode = DB.movie_dict.__len__() + 1
+
+        print(logoutcode, ". Back ")
+
+        choice = InputCheck.int_input_check("Enter movie number for delete :- ")
+
+        if choice == logoutcode:
+            self.go_to_admin_options()
+
+        else:
+            selected_movie_index = choice - 1
+            selected_movie = DB.movie_list[selected_movie_index]
+            key = selected_movie.movie_id
+
+            del DB.movie_dict[key]
+            DB.movie_list.pop(selected_movie_index)
+
+            print(selected_movie.title, " deleted")
+            print("Available Movies ")
+            DB.show_movies_name(self)
+
+            self.go_to_admin_options()
 
     def logout(self):
         print("Logout")
@@ -124,22 +161,21 @@ class Admin(InvalidCredential, DB, InputCheck):
     def edit_movie(self):
         print("Edit movie's info")
 
-        movie_name = input("Find movie for edit :- ")
+        DB.show_movies_name(self)
 
-        if DB.movie_dict.get(movie_name) is None:
-            print("movie name doesn't exit")
-            op = 0
-            while op != 2:
-                op = options_on_invalid_choice()
-                if op == 1:
-                    self.edit_movie()
-                elif op == 2:
-                    return
-                else:
-                    print("Invalid input")
+        logoutcode = DB.movie_dict.__len__() + 1
+
+        print(logoutcode, ". Back ")
+
+        choice = InputCheck.int_input_check("Enter movie number for edit :- ")
+
+        if choice == logoutcode:
+            self.go_to_admin_options()
 
         else:
-            editing_movie = DB.movie_dict.get(movie_name)
+            selected_movie_index = choice - 1
+            editing_movie = DB.movie_list[selected_movie_index]
+            # DB.movie_dict.get(editing_movie.title)
 
             edit_choice = -1
 
@@ -163,57 +199,48 @@ class Admin(InvalidCredential, DB, InputCheck):
                 edit_choice = InputCheck.int_input_check("Enter choice :- ")
 
                 if edit_choice == 0:
+                    print("Movie's edited details :- ")
+                    DB.show_movie_details(self, choice - 1)
                     self.go_to_admin_options()
 
-                if edit_choice == 1:
-                    op = 0
-                    while op != 2:
-                        new_tile = input("new title for movie:- ")
-
-                        if DB.movie_dict.get(new_tile) is None:
-                            editing_movie.title = new_tile
-                            DB.movie_dict[new_tile] = DB.movie_dict[movie_name]
-                            del DB.movie_dict[movie_name]
-
-                        else:
-                            print("Entered movie name already exits ")
-                            op = options_on_invalid_choice()
-
+                elif edit_choice == 1:
+                    edit_movie_info(selected_movie_index, "title")
                 elif edit_choice == 2:
-                    edit_movie_info(editing_movie, "genre")
+                    edit_movie_info(selected_movie_index, "genre")
                 elif edit_choice == 3:
-                    edit_movie_info(editing_movie, "length")
+                    edit_movie_info(selected_movie_index, "length")
                 elif edit_choice == 4:
-                    edit_movie_info(editing_movie, "cast")
+                    edit_movie_info(selected_movie_index, "cast")
                 elif edit_choice == 5:
-                    edit_movie_info(editing_movie, "director")
+                    edit_movie_info(selected_movie_index, "director")
                 elif edit_choice == 6:
-                    edit_movie_info(editing_movie, "admin_rating")
+                    edit_movie_info(selected_movie_index, "admin_rating")
                 elif edit_choice == 7:
-                    edit_movie_info(editing_movie, "language")
+                    edit_movie_info(selected_movie_index, "language")
                 elif edit_choice == 8:
-                    edit_movie_info(editing_movie, "numShow")
+                    edit_movie_info(selected_movie_index, "numShow")
                 elif edit_choice == 9:
-                    edit_movie_info(editing_movie, "first_show")
+                    edit_movie_info(selected_movie_index, "first_show")
                 elif edit_choice == 10:
-                    edit_movie_info(editing_movie, "interval_timing")
+                    edit_movie_info(selected_movie_index, "interval_timing")
                 elif edit_choice == 11:
-                    edit_movie_info(editing_movie, "gap_bt_show")
+                    edit_movie_info(selected_movie_index, "gap_bt_show")
                 elif edit_choice == 12:
-                    edit_movie_info(editing_movie, "seat_capacity")
+                    edit_movie_info(selected_movie_index, "seat_capacity")
 
     def add_new_movie(self):
         print("****** Add new movie info ******")
         title = input("Enter movie's title :- ")
         genre = input("Enter movie's Genre :- ")
         length = InputCheck.int_input_check("Enter movie's length (hours):- ")
-        try :
+        try:
             length *= 60
         except Exception as e:
             print(e)
             length = InputCheck.int_input_check("Enter movie's length (hours):- ")
 
         length += InputCheck.int_input_check("Enter movie's length (minutes):- ")
+
         cast = input("Enter movie's cast :- ")
         director = input("Enter movie's director :- ")
         admin_rating = InputCheck.float_input_check("Enter movie's admin rating (out of 10 ):- ")
@@ -230,18 +257,16 @@ class Admin(InvalidCredential, DB, InputCheck):
         user_rating = 0.0
         available_seat = seat_capacity
 
-        new_movie_obj = movie.Movie(title, genre, length, cast, director, admin_rating, user_rating, language, timings,
+        generate_id = get_id()
+
+        new_movie_obj = movie.Movie(generate_id, title, genre, length, cast, director, admin_rating, user_rating, language, timings,
                                     numShows,
                                     first_show, interval_timing, gap_bt_show, seat_capacity, available_seat)
+        # add in dictionary
+        DB.movie_dict[generate_id] = new_movie_obj
 
-        DB.movie_dict[title] = new_movie_obj
-
+        # add in list
         DB.movie_list.append(new_movie_obj)
-
-        # print("title", new_movie_obj.title)
-        # print("gerne", new_movie_obj.genre)
-        # print("len", new_movie_obj.length)
-        # print("time ", new_movie_obj.timings)
 
         # DB.show_movie_details(self, new_movie_obj)
 
@@ -252,6 +277,7 @@ class Admin(InvalidCredential, DB, InputCheck):
         self.go_to_admin_options()
 
     def go_to_admin_options(self):
+
         print("****** Welcome Admin *******")
 
         print("1. Add New Movie Info")
