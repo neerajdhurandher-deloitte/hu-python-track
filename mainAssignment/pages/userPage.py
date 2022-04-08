@@ -1,7 +1,7 @@
-from mainAssignment.customeExceptions import invalidCredential
+from mainAssignment.customeExceptions.invalidCredential import InvalidCredential
 from mainAssignment.utils import movie, user
 from mainAssignment.pages import homePage
-
+from mainAssignment.utils.db import DB
 
 user_list = []
 user_dic = {}
@@ -17,14 +17,14 @@ def register_user():
     password = input("Enter your password :- ")
 
     new_user = user.User(username, name, email, phone, age, password)
-    try:
+
+    if user_dic.get(username) is None:
         user_dic[username] = new_user
         user_list.append(user_dic)
-    except invalidCredential.InvalidCredential as e:
-        e.print_msg("user already exits")
-
-    # finally:
-    #     return
+        print("User created")
+        print(user_list)
+    else:
+        print("user already exits")
 
 
 def user_login():
@@ -54,7 +54,7 @@ def welcome_page():
     return choice
 
 
-class UserPage(invalidCredential.InvalidCredential):
+class UserPage(InvalidCredential, DB):
 
     def __init__(self):
         pass
@@ -70,9 +70,6 @@ class UserPage(invalidCredential.InvalidCredential):
                 register_user()
             else:
                 print("Invalid choice , try again")
-                choice = int(input("Enter :- "))
             choice = welcome_page()
 
 
-u = UserPage()
-u.user_page()
