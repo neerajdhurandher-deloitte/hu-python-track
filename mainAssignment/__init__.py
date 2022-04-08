@@ -15,22 +15,5 @@
 # li.append(op3)
 #
 # print(d.__len__(), " kgnakn")
-#
+
 # print(li)
-# # temp = d.get("a")
-# # print(temp.val)
-#
-# for item in li:
-#     a = item.val
-#     print(a)
-#
-# # i = 1
-# # for key, value in d.items():
-# #     print(str(i), " key", key, " value", value.val)
-# #     i += 1
-# #
-# # d["a"] = "11"
-# # print(d.get("a"))
-# # print(li[0].val)
-#
-# # print(6/2)

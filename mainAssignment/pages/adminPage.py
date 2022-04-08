@@ -6,18 +6,6 @@ from mainAssignment.utils import movie
 
 from mainAssignment.utils.db import DB
 
-
-# class InvalidCredential(Exception):
-#     def __init__(self):
-#         super()
-#
-#     def print_msg(self, message):
-#         print("Error ", message)
-
-
-# movie_dict = {}
-
-
 def str_val(val):
     if val < 10:
         return "0" + str(val)
@@ -95,18 +83,16 @@ def options_on_invalid_choice():
     op = InputCheck.int_input_check("choice :- ")
     return op
 
+def check_data_for_input(param):
 
-def edit_movie_info(selected_movie_index, param):
-    new_input = input("Enter new " + param + " :- ")
-    editing_movie = DB.movie_list[selected_movie_index]
+    if isinstance(param, int):
+        new_input = InputCheck.int_input_check("Enter new " + param + " :- ")
+    elif isinstance(param, float):
+        new_input = InputCheck.float_input_check("Enter new " + param + " :- ")
+    else:
+        new_input = InputCheck.str_input_check("Enter new " + param + " :- ")
 
-    try:
-        editing_movie.param = new_input
-    except TypeError as e:
-        editing_movie.param = int(new_input)
-        editing_movie.param = float(new_input)
-    finally:
-        print("movie " + param + " info edit successfully")
+    return new_input
 
 
 def get_id():
@@ -119,6 +105,8 @@ def get_id():
 
         else:
             return generated_id
+
+
 
 
 class Admin(InvalidCredential, DB, InputCheck):
@@ -184,54 +172,66 @@ class Admin(InvalidCredential, DB, InputCheck):
                 print("Which filed you want to edit")
                 print("1. Title")
                 print("2. genre")
-                print("3. length")
-                print("4. cast")
-                print("5. director")
-                print("6. admin rating")
-                print("7. language")
-                print("8. number of Shows")
-                print("9. first_show")
-                print("10. interval timing")
-                print("11. gap between shows")
-                print("12. seat capacity")
+                print("3. cast")
+                print("4. director")
+                print("5. admin rating")
+                print("6. language")
+                print("7. seat capacity")
                 print("0. Exit")
 
                 edit_choice = InputCheck.int_input_check("Enter choice :- ")
 
                 if edit_choice == 0:
+                    print(editing_movie.title + "'s  details edited successfully")
+                    DB.movie_dict[editing_movie.movie_id] = editing_movie
                     print("Movie's edited details :- ")
-                    DB.show_movie_details(self, choice - 1)
+                    DB.show_movie_details(self, selected_movie_index)
                     self.go_to_admin_options()
 
                 elif edit_choice == 1:
-                    edit_movie_info(selected_movie_index, "title")
+                    param = editing_movie.title
+                    new_val = check_data_for_input(param)
+                    editing_movie.title = new_val
+
                 elif edit_choice == 2:
-                    edit_movie_info(selected_movie_index, "genre")
+                    param = editing_movie.genre
+                    new_val = check_data_for_input(param)
+                    editing_movie.genre = new_val
+
                 elif edit_choice == 3:
-                    edit_movie_info(selected_movie_index, "length")
+                    param = editing_movie.cast
+                    new_val = check_data_for_input(param)
+                    editing_movie.cast = new_val
+
                 elif edit_choice == 4:
-                    edit_movie_info(selected_movie_index, "cast")
+                    param = editing_movie.director
+                    new_val = check_data_for_input(param)
+                    editing_movie.director = new_val
+
                 elif edit_choice == 5:
-                    edit_movie_info(selected_movie_index, "director")
+                    param = editing_movie.admin_rating
+                    new_val = check_data_for_input(param)
+                    editing_movie.admin_rating = new_val
+
                 elif edit_choice == 6:
-                    edit_movie_info(selected_movie_index, "admin_rating")
+                    param = editing_movie.language
+                    new_val = check_data_for_input(param)
+                    editing_movie.language = new_val
+
                 elif edit_choice == 7:
-                    edit_movie_info(selected_movie_index, "language")
-                elif edit_choice == 8:
-                    edit_movie_info(selected_movie_index, "numShow")
-                elif edit_choice == 9:
-                    edit_movie_info(selected_movie_index, "first_show")
-                elif edit_choice == 10:
-                    edit_movie_info(selected_movie_index, "interval_timing")
-                elif edit_choice == 11:
-                    edit_movie_info(selected_movie_index, "gap_bt_show")
-                elif edit_choice == 12:
-                    edit_movie_info(selected_movie_index, "seat_capacity")
+                    param = editing_movie.seat_capacity
+                    new_val = check_data_for_input(param)
+                    editing_movie.seat_capacity = new_val
+
+                else:
+                    print("Invalid input !! try again")
 
     def add_new_movie(self):
         print("****** Add new movie info ******")
         title = input("Enter movie's title :- ")
+
         genre = input("Enter movie's Genre :- ")
+
         length = InputCheck.int_input_check("Enter movie's length (hours):- ")
         try:
             length *= 60
@@ -242,24 +242,34 @@ class Admin(InvalidCredential, DB, InputCheck):
         length += InputCheck.int_input_check("Enter movie's length (minutes):- ")
 
         cast = input("Enter movie's cast :- ")
+
         director = input("Enter movie's director :- ")
+
         admin_rating = InputCheck.float_input_check("Enter movie's admin rating (out of 10 ):- ")
+
         language = input("Enter movie's language :- ")
 
         numShows = InputCheck.int_input_check("Enter movie's number of shows in a day :- ")
+
         first_show = InputCheck.int_input_check("Enter timing of first shows of the day ( 24 hours formate ) :- ")
+
         interval_timing = InputCheck.int_input_check("Enter movie's interval timing  (int minutes) :- ")
+
         gap_bt_show = InputCheck.int_input_check("Enter the of gap timing between shows  (int minutes) :- ")
+
         seat_capacity = InputCheck.int_input_check("Enter seat capacity in theater :- ")
+
 
         timings = show_timing_setup(length, interval_timing, gap_bt_show, numShows, first_show)
 
         user_rating = 0.0
         available_seat = seat_capacity
 
+        # random key generated for dict key
         generate_id = get_id()
 
-        new_movie_obj = movie.Movie(generate_id, title, genre, length, cast, director, admin_rating, user_rating, language, timings,
+        new_movie_obj = movie.Movie(generate_id, title, genre, length, cast, director, admin_rating, user_rating,
+                                    language, timings,
                                     numShows,
                                     first_show, interval_timing, gap_bt_show, seat_capacity, available_seat)
         # add in dictionary
