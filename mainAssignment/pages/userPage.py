@@ -86,7 +86,7 @@ class UserPage(InvalidCredential, DB ,InputCheck):
     def sel_movie_actions(self, choice):
         # shows movies details
         get_movie_index = choice-1
-        DB.show_movie_details(self, DB.movie_list[get_movie_index])
+        DB.show_movie_details(self, get_movie_index)
         self.action_on_movie(get_movie_index)
 
     def action_on_movie(self, get_movie_index):
@@ -122,18 +122,18 @@ class UserPage(InvalidCredential, DB ,InputCheck):
         sel_timing = InputCheck.int_input_check("Select timing :- ")
         print("Timing ", get_movie.timings[sel_timing-1])
         available_ticket = get_movie.available_seat
-        print("Remaining seats :- ")
+        print("Remaining seats :- " , available_ticket)
         ticket_count = InputCheck.int_input_check("Enter number of seats :- ")
 
         if ticket_count > available_ticket:
-            print("Invalid input !!  try again")
+            print(ticket_count, " seats are not available.  try again")
             self.action_on_movie(get_movie_index)
         else:
             get_movie.available_seat = available_ticket - ticket_count
             print("Thanks for booking")
             self.after_login()
 
-    def cancle_ticet(self, get_movie_index):
+    def cancel_ticket(self, get_movie_index):
         get_movie = DB.movie_list[get_movie_index]
         print("*** Book tickets for ", get_movie.title, " movie")
         cancel_tickets = InputCheck.int_input_check("Number of seats you want to cancel :-  ")
@@ -150,7 +150,7 @@ class UserPage(InvalidCredential, DB ,InputCheck):
 
     def user_rating(self, get_movie_index):
         get_movie = DB.movie_list[get_movie_index]
-        print("*** Rate ", get_movie.title, " movie (max 10)")
+        print("*** Rate ", get_movie.title, " movie (max 10) :- ")
         rating = InputCheck.float_input_check("Enter your rating")
         if rating > 10:
             print("Invalid input !!  try again")

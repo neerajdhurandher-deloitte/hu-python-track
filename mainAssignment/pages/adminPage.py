@@ -110,7 +110,7 @@ def edit_movie_info(editing_movie, param):
 
 class Admin(InvalidCredential, DB, InputCheck):
     # TODO create valid admin credential
-    admin_dict = {"username": "a", "password": "a"}
+    admin_dict = {"username": "admin", "password": "admin"}
 
     print("****** Welcome to Admin Login Page *******")
 
@@ -236,7 +236,7 @@ class Admin(InvalidCredential, DB, InputCheck):
 
         DB.movie_dict[title] = new_movie_obj
 
-        DB.movie_list = new_movie_obj
+        DB.movie_list.append(new_movie_obj)
 
         # print("title", new_movie_obj.title)
         # print("gerne", new_movie_obj.genre)
